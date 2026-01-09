@@ -29,8 +29,12 @@
     var currentRow = 0;
     var currentCol = 0;
     var currentWord = "";
+    let isAnimating = false;
+
     document.addEventListener("keydown", (event) => {
         event.preventDefault();
+        if (isAnimating) return;
+
         console.log("Key pressed:", currentCol);
         if (/^[a-zA-Z]$/.test(event.key)) {
             if (currentCol < 5) {
@@ -53,6 +57,9 @@
             currentCol = 0;
             currentWord = "";
         } else if (event.key === "Backspace") {
+            if (currentCol <= 0) {
+                return;
+            }
             currentCol--;
             currentWord = currentWord.slice(0, -1);
             var col = document.querySelector(`#col-${currentRow}${currentCol}`);
@@ -73,6 +80,11 @@
     }
 
     async function checkWord(reversedWord, inputWord, currentRow) {
+        isAnimating = true;
+
+        const tileFlipDuration = 350;
+        const animationDuration = 600;
+
         for (var i = 0; i < inputWord.length; i++) {
             var col = document.querySelector(`#col-${currentRow}${i}`);
             if (!col) continue;
@@ -89,11 +101,31 @@
             }
 
             col.classList.add("flip");
-            await delay(350);
+            await delay(tileFlipDuration);
+        }
+
+        await delay(animationDuration);
+
+        isAnimating = false;
+
+        if (inputWord === reversedWord) {
+            showPopup(true);
+        } else if (currentRow === 5) {
+            showPopup(false);
         }
     }
 
     function delay(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    function showPopup(gameWon) {
+        const popup = document.querySelector("#gameoverpopup");
+        if (gameWon) {
+            popup.textContent = "Congratulations! You've guessed the word.";
+        } else {
+            popup.textContent = "Game Over! The word was: " + reversedWord;
+        }
+        popup.classList.remove("hide");
     }
 })();

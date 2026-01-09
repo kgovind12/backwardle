@@ -6,6 +6,11 @@
     --off-white: rgb(229, 229, 229);
 }
 
+/************* Common styles ************/
+.hide {
+    display: none !important;
+}
+
 body {
     height: 100vh;
     width: 100vw;
@@ -69,6 +74,21 @@ main {
 
 .absent {
     background-color: var(--absent);
+}
+
+.gameoverpopup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    z-index: 1000;
 }
 
 
