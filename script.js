@@ -1,9 +1,4 @@
 (function () {
-    const rootStyles = getComputedStyle(document.documentElement);
-    const correctColor = rootStyles.getPropertyValue("--correct");
-    const presentColor = rootStyles.getPropertyValue("--present");
-    const absentColor = rootStyles.getPropertyValue("--absent");
-
     // set date
     const startDate = new Date("2026-01-09");
     const today = new Date();
@@ -21,7 +16,7 @@
 
     // localStorage.setItem("game-2026-01-08", JSON.stringify(gameState));
 
-    const word = "horse";
+    const word = "click";
     const reversedWord = word.split("").reverse().join("");
 
     console.log("reversed word = ", reversedWord);
