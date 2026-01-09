@@ -36,6 +36,7 @@
                 console.log("Alphabet key:", event.key);
                 var col = document.querySelector(`#col-${currentRow}${currentCol}`);
                 col.textContent = event.key.toUpperCase();
+                col.classList.add("filled");
                 currentCol++;
                 currentWord += event.key;
             } else {

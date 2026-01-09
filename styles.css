@@ -53,7 +53,7 @@ main {
 }
 
 .col {
-    border: 1px solid rgb(182, 182, 182);
+    border: 2px solid rgb(128, 128, 128);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -66,14 +66,17 @@ main {
 
 .correct {
     background-color: var(--correct);
+    border: transparent !important;
 }
 
 .present {
     background-color: var(--present);
+    border: transparent !important;
 }
 
 .absent {
     background-color: var(--absent);
+    border: transparent !important;
 }
 
 .gameoverpopup {
@@ -95,6 +98,7 @@ main {
 /*************** ANIMATIONS ***************/
 .col.filled {
     animation: pop 0.1s ease-in-out;
+    border: 2px solid var(--off-white);
 }
 
 .col.flip {
