@@ -91,13 +91,13 @@
 
             if (inputWord[i] == reversedWord[i]) {
                 // correct
-                col.style.backgroundColor = correctColor;
+                col.classList.add("correct");
             } else if (reversedWord.includes(inputWord[i])) {
                 // present but not in the right place
-                col.style.backgroundColor = presentColor;
+                col.classList.add("present");
             } else {
                 // not present in reversed word
-                col.style.backgroundColor = absentColor;
+                col.classList.add("absent");
             }
 
             col.classList.add("flip");
