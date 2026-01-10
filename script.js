@@ -50,10 +50,11 @@
         if (isAnimating) return;
 
         console.log("Key pressed:", currentCol);
+        var col = document.querySelector(`#col-${currentRow}${currentCol}`);
+
         if (/^[a-zA-Z]$/.test(event.key)) {
             if (currentCol < 5) {
                 console.log("Alphabet key:", event.key);
-                var col = document.querySelector(`#col-${currentRow}${currentCol}`);
                 col.textContent = event.key.toUpperCase();
                 col.classList.add("filled");
                 currentCol++;
@@ -75,10 +76,11 @@
             if (currentCol <= 0) {
                 return;
             }
+            var prevCol = document.querySelector(`#col-${currentRow}${currentCol - 1}`);
+            prevCol.classList.remove("filled");
             currentCol--;
             currentWord = currentWord.slice(0, -1);
-            var col = document.querySelector(`#col-${currentRow}${currentCol}`);
-            col.textContent = "";
+            prevCol.textContent = "";
         }
     });
 
