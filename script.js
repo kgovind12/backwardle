@@ -45,45 +45,65 @@
     var currentWord = "";
     let isAnimating = false;
 
-    document.addEventListener("keydown", (event) => {
-        event.preventDefault();
+    // centralize key processing (keyboard + on-screen keyboard)
+    async function processKey(key) {
         if (isAnimating) return;
+        console.log("Key pressed:", key, "col", currentCol);
 
-        console.log("Key pressed:", currentCol);
-        var col = document.querySelector(`#col-${currentRow}${currentCol}`);
-
-        if (/^[a-zA-Z]$/.test(event.key)) {
+        if (/^[a-zA-Z]$/.test(key)) {
             if (currentCol < 5) {
-                console.log("Alphabet key:", event.key);
-                col.textContent = event.key.toUpperCase();
+                const col = document.querySelector(`#col-${currentRow}${currentCol}`);
+                if (!col) return;
+                col.textContent = key.toUpperCase();
                 col.classList.add("filled");
                 currentCol++;
-                currentWord += event.key;
+                currentWord += key.toLowerCase();
             } else {
                 console.log("Max columns reached");
                 currentCol = 5;
                 return;
             }
-        } else if (event.key === "Enter") {
-            if (currentCol < 5) {
-                return;
-            }
-            checkWord(reversedWord, currentWord, currentRow);
+        } else if (key === "Enter") {
+            if (currentCol < 5) return;
+            await checkWord(reversedWord, currentWord, currentRow);
             currentRow++;
             currentCol = 0;
             currentWord = "";
-        } else if (event.key === "Backspace") {
-            if (currentCol <= 0) {
-                return;
-            }
-            var prevCol = document.querySelector(`#col-${currentRow}${currentCol - 1}`);
+        } else if (key === "Backspace") {
+            if (currentCol <= 0) return;
+            const prevCol = document.querySelector(`#col-${currentRow}${currentCol - 1}`);
+            if (!prevCol) return;
             prevCol.classList.remove("filled");
             currentCol--;
             currentWord = currentWord.slice(0, -1);
             prevCol.textContent = "";
         }
+    }
+
+    // physical keyboard
+    document.addEventListener("keydown", (event) => {
+        event.preventDefault();
+        processKey(event.key);
     });
 
+    // wire on-screen keyboard buttons
+    function initOnscreenKeyboard() {
+        const keys = document.querySelectorAll('.kb-key');
+        keys.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const txt = btn.textContent.trim();
+                if (txt === '⌫') return processKey('Backspace');
+                if (txt.toLowerCase() === 'enter') return processKey('Enter');
+                return processKey(txt);
+            });
+        });
+    }
+
+    // initialize keyboard when DOM is ready (script runs at end of body or deferred)
+    initOnscreenKeyboard();
+
+    // function that checks the letters of the inputted word
+    // compares to the reversed word (final word)
     async function checkWord(reversedWord, inputWord, currentRow) {
         isAnimating = true;
 
