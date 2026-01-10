@@ -1,25 +1,44 @@
-(function () {
-    // set date
-    const startDate = new Date("2026-01-09");
-    const today = new Date();
-    const dayNumber = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
-    // load the word list
-    // loadWordList().then(wordList => {
-    //     console.log("Loaded words:", wordList.length);
-    //     localStorage.setItem("wordList", JSON.stringify(wordList));
-    // });
+(async function () {
+    let word;
+    let reversedWord;
 
-    // let WORDS = localStorage.getItem("wordList");
+    // initialize today's word (random pick) and persist it so it stays the same for the day
+    async function initDailyWord() {
+        const todayStr = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+        const storedDate = localStorage.getItem("dailyWordDate");
+        const storedWord = localStorage.getItem("dailyWord");
 
-    // const word = WORDS[dayNumber % WORDS.length];
-    // const reversedWord = word.split("").reverse().join("");
+        if (storedDate === todayStr && storedWord) {
+            word = storedWord;
+        } else {
+            const words = await loadWordList();
+            if (!words || words.length === 0) {
+                word = "click"; // fallback
+            } else {
+                const idx = Math.floor(Math.random() * words.length);
+                word = words[idx];
+            }
+            localStorage.setItem("dailyWord", word);
+            localStorage.setItem("dailyWordDate", todayStr);
+        }
 
-    // localStorage.setItem("game-2026-01-08", JSON.stringify(gameState));
+        reversedWord = word.split("").reverse().join("");
+        console.log("reversed word = ", reversedWord);
+    }
 
-    const word = "click";
-    const reversedWord = word.split("").reverse().join("");
+    await initDailyWord();
 
-    console.log("reversed word = ", reversedWord);
+        async function loadWordList() {
+        const response = await fetch("words.txt");
+        const text = await response.text();
+
+        const words = text
+            .split("\n")
+            .map(word => word.trim())
+            .filter(word => word.length === 5);
+
+        return words;
+    }
 
     var currentRow = 0;
     var currentCol = 0;
@@ -62,18 +81,6 @@
             col.textContent = "";
         }
     });
-
-    async function loadWordList() {
-        const response = await fetch("words.txt");
-        const text = await response.text();
-
-        const words = text
-            .split("\n")
-            .map(word => word.trim())
-            .filter(word => word.length === 5);
-
-        return words;
-    }
 
     async function checkWord(reversedWord, inputWord, currentRow) {
         isAnimating = true;
