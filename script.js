@@ -27,6 +27,8 @@
     }
 
     await initDailyWord();
+    // ensure the full word list is loaded for validation (might not have been loaded inside initDailyWord)
+    await loadWordList();
 
         async function loadWordList() {
         const response = await fetch("words.txt");
@@ -37,7 +39,9 @@
             .map(word => word.trim())
             .filter(word => word.length === 5);
 
-        return words;
+            // expose the list globally for validation
+            window.wordList = words;
+            return words;
     }
 
     var currentRow = 0;
@@ -65,6 +69,22 @@
             }
         } else if (key === "Enter") {
             if (currentCol < 5) return;
+
+            // validate guess: either the guess itself or its reverse must be a real word
+            const words = window.wordList || [];
+            const guess = currentWord.toLowerCase();
+            const guessRev = guess.split("").reverse().join("");
+
+            if (!words.includes(guess) && !words.includes(guessRev)) {
+                // invalid word: shake the current row briefly
+                const rowEl = document.querySelector(`#row-${currentRow}`);
+                if (rowEl) {
+                    rowEl.classList.add('shake');
+                    setTimeout(() => rowEl.classList.remove('shake'), 600);
+                }
+                return;
+            }
+
             await checkWord(reversedWord, currentWord, currentRow);
             currentRow++;
             currentCol = 0;
