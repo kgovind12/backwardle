@@ -106,6 +106,20 @@ main {
   transform: translateY(1px);
 }
 
+/* keyboard key result states */
+.kb-key.correct {
+  background: var(--correct) !important;
+  color: #ffffff !important;
+}
+.kb-key.present {
+  background: var(--present) !important;
+  color: #111 !important;
+}
+.kb-key.absent {
+  background: #3a3a3a !important;
+  color: #fff !important;
+}
+
 /* Mobile responsive */
 @media (max-width: 480px) {
   body {

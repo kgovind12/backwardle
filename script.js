@@ -137,12 +137,15 @@
             if (inputWord[i] == reversedWord[i]) {
                 // correct
                 col.classList.add("correct");
+                setKeyStatus(inputWord[i], 'correct');
             } else if (reversedWord.includes(inputWord[i])) {
                 // present but not in the right place
                 col.classList.add("present");
+                setKeyStatus(inputWord[i], 'present');
             } else {
                 // not present in reversed word
                 col.classList.add("absent");
+                setKeyStatus(inputWord[i], 'absent');
             }
 
             col.classList.add("flip");
@@ -162,6 +165,23 @@
 
     function delay(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    // helper: set keyboard key color state with priority (absent < present < correct)
+    function setKeyStatus(letter, status) {
+        if (!letter) return;
+        const keyBtns = document.querySelectorAll('.kb-key');
+        const target = Array.from(keyBtns).find(b => b.textContent.trim().toLowerCase() === letter.toLowerCase());
+        if (!target) return;
+        const priority = { absent: 1, present: 2, correct: 3 };
+        let existing = null;
+        if (target.classList.contains('correct')) existing = 'correct';
+        else if (target.classList.contains('present')) existing = 'present';
+        else if (target.classList.contains('absent')) existing = 'absent';
+        if (!existing || priority[status] > priority[existing]) {
+            target.classList.remove('absent', 'present', 'correct');
+            target.classList.add(status);
+        }
     }
 
     function showPopup(gameWon) {
