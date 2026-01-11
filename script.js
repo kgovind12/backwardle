@@ -129,6 +129,7 @@
 
         const tileFlipDuration = 350;
         const animationDuration = 600;
+        const popupDelay = 400; // extra wait before showing the win/loss popup (ms)
 
         for (var i = 0; i < inputWord.length; i++) {
             var col = document.querySelector(`#col-${currentRow}${i}`);
@@ -154,11 +155,36 @@
 
         await delay(animationDuration);
 
-        isAnimating = false;
-
+        // If the guess is correct, play a wave jump animation on each tile, staggered,
+        // then show the win popup. Keep input locked while this runs.
         if (inputWord === reversedWord) {
+            // keep isAnimating true during the wave
+            const jumpStagger = 100; // ms between tiles (tighter wave)
+            const jumpDuration = 360; // must match CSS animation duration
+
+            for (let i = 0; i < inputWord.length; i++) {
+                const col = document.querySelector(`#col-${currentRow}${i}`);
+                if (!col) continue;
+                // add class to trigger jump; remove after animation completes
+                col.classList.add('win-jump');
+                col.classList.remove('flip');
+                // remove class after animationDuration to allow future replays
+                setTimeout(() => col.classList.remove('win-jump'), jumpDuration + 30);
+                await delay(jumpStagger);
+            }
+
+            // wait for last tile's jump to finish before showing popup
+            await delay(jumpDuration + 100);
+            await delay(popupDelay);
             showPopup(true);
-        } else if (currentRow === 5) {
+            isAnimating = false;
+            return;
+        }
+
+        // not a win: re-enable input and possibly show loss popup
+        isAnimating = false;
+        if (currentRow === 5) {
+            await delay(popupDelay);
             showPopup(false);
         }
     }

@@ -172,6 +172,7 @@ main {
     text-transform: uppercase;
     color: #ffffff;
     background-color: var(--main-black);
+    will-change: transform; /* hint browser for smoother transforms */
 }
 
 .correct {
@@ -252,4 +253,18 @@ main {
   60% { transform: translateX(-6px); }
   80% { transform: translateX(6px); }
   100% { transform: translateX(0); }
+}
+
+/* win wave jump animation */
+.col.win-jump {
+  /* use 3D transform for better GPU compositing and a smoother easing curve */
+  animation: jump 380ms cubic-bezier(.16,1,.3,1) both;
+  backface-visibility: hidden;
+}
+
+@keyframes jump {
+  0% { transform: translate3d(0,0,0); }
+  28% { transform: translate3d(0,-18px,0); }
+  60% { transform: translate3d(0,0,0); }
+  100% { transform: translate3d(0,0,0); }
 }
