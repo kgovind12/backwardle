@@ -1,8 +1,8 @@
 :root {
-    --main-black: rgb(48, 48, 48);
-    --correct: green;
-    --present: rgb(248, 212, 8);
-    --absent: gray;
+    --main-black: #121213;
+    --correct: #538d4e;
+    --present: #b59f3b;
+    --absent: #3a3a3c;
     --off-white: rgb(229, 229, 229);
     --light-gray: rgb(146, 146, 146);
 }
